@@ -1,0 +1,6 @@
+{
+  "name": "SkillBridge AI",
+  "description": "Turn student project claims into verifiable evidence through decision-grounded assessment, rubric feedback, and iterative revision for AICON'26 by Team Gradient.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
