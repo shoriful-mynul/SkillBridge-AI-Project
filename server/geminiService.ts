@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import 'dotenv/config';
 import { GoogleGenAI } from '@google/genai';
 import { z } from 'zod';
 
@@ -64,6 +65,11 @@ export class GeminiService {
       maxRetries = 2,
     } = options;
 
+    // JSON mode does not tell Gemini which application fields to return.
+    // Supply the actual contract in the prompt; validate the response below.
+    const outputSchema = z.toJSONSchema(schema, { io: 'input' });
+    const structuredPrompt = prompt + '\\n\\nOUTPUT CONTRACT (required): Return only one JSON object matching this JSON Schema. Include every required field. Do not return a schema, prose, or markdown fences.\\n' + JSON.stringify(outputSchema);
+
     let attempt = 0;
     let lastError: any = null;
 
@@ -73,7 +79,7 @@ export class GeminiService {
       try {
         const resultPromise = this.aiClient.models.generateContent({
           model,
-          contents: [{ role: 'user', parts: [{ text: prompt }] }],
+          contents: [{ role: 'user', parts: [{ text: structuredPrompt }] }],
           config: {
             systemInstruction,
             responseMimeType: 'application/json',
