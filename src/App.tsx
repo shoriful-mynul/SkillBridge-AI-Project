@@ -207,6 +207,9 @@ export default function App() {
       }
 
       const data = await response.json();
+      // Continue with the server-issued session, not the initial browser UUID.
+      if (!data.sessionId) throw new Error('Server did not return an assessment session. Please start again.');
+      setSessionId(data.sessionId);
 
       if (data.needsClarification) {
         setClarification(data);
